@@ -1,10 +1,5 @@
-import { TweetV2, TwitterApi, UserV2Result } from "twitter-api-v2";
-import { config } from "dotenv";
-
-config({
-    path: '.env',
-    debug: true,
-})
+import { TweetV2, TwitterApi, UserV2Result } from "twitter-api-v2"
+import { config } from "dotenv"
 
 /**
  * Set up the Twitter API 🐦
@@ -21,7 +16,7 @@ const twitterClient = new TwitterApi(TWITTER_BEARER_TOKEN!)
  * @property {TweetV2[]} timeline
  * @returns UserTimeline
  */
-interface UserTimeline {
+export interface UserTimeline {
     user: UserV2Result,
     timeline: TweetV2[]
 }
@@ -30,25 +25,22 @@ interface UserTimeline {
  * Retrieve user tweets 📝
  * @param twitterHandle Username of the Twitter user
  * @param max_results max number of tweets to retrieve (min: 5, max: 100)
- * @returns Promise<TweetV2[] | undefined>
+ * @returns Promise<TweetV2[]>
  */
-export const retrieveUserTweets = async (twitterHandle: string, max_results: number): Promise<UserTimeline | undefined> => {
+export const retrieveUserTweets = async (twitterHandle: string, max_results: number): Promise<UserTimeline> => {
     try {
         const user = await twitterClient.v2.userByUsername(twitterHandle)
         const userTimeline = await twitterClient.v2.userTimeline(user.data.id, { max_results })
-        return {
-            user,
-            timeline: userTimeline.data.data
-        }
+        return { user, timeline: userTimeline.data.data }
     } catch (error) {
-        console.error(error)
+        throw error
     }
 }
 
 /******************************************************************************
  * Prepare a batch of tweets to like 💬
  *****************************************************************************/
-interface LikeBatch {
+export interface LikeBatch {
     tasks: {
         tweet: string
     }[]
@@ -60,23 +52,19 @@ interface LikeBatch {
  * Campaign template has has the following placeholder:
  * { 'tweet': "nosana/1594994422856306688" }
  * @param userTimeline
- * @returns LikeBatch | undefined
+ * @returns LikeBatch
  */
-export const prepareLikeTweets = (userTimeline: UserTimeline): LikeBatch | undefined => {
-    try {
-        const userName = userTimeline.user.data.username
-        const likeTweets = userTimeline.timeline.map(tweet => ({ 'tweet': `${userName}/${tweet.id}` }))
-        const likeBatch = { tasks: likeTweets }
-        return likeBatch
-    } catch (error) {
-        console.error(error)
-    }
+export const prepareLikeTweets = (userTimeline: UserTimeline): LikeBatch => {
+    const userName = userTimeline.user.data.username
+    const likeTweets = userTimeline.timeline.map(tweet => ({ 'tweet': `${userName}/${tweet.id}` }))
+    const likeBatch = { tasks: likeTweets }
+    return likeBatch
 }
 
 /******************************************************************************
  * Prepare a batch of tweets to retweet 💬
  *****************************************************************************/
-interface RetweetBatch {
+export interface RetweetBatch {
     tasks: {
         tweet_instructions: string,
         tweet_id: string
@@ -90,30 +78,26 @@ interface RetweetBatch {
  * { 'tweet_instructions': "Lorem Ipsum", 'tweet_id': "nosana/1594994422856306688" }
  * @param userTimeline
  * @param tweet_instructions
- * @returns RetweetBatch | undefined
+ * @returns RetweetBatch
  *
  * TODO: Does the template need to updated to include the username?
  */
-export const prepareRetweets = (userTimeline: UserTimeline, tweet_instructions: string): RetweetBatch | undefined => {
-    try {
-        const userName = userTimeline.user.data.username
-        const retweets = userTimeline.timeline.map(tweet => {
-            return {
-                'tweet_instructions': tweet_instructions,
-                'tweet_id': `${tweet.id}`
-            }
-        })
-        const retweetBatch = { tasks: retweets }
-        return retweetBatch
-    } catch (error) {
-        console.error(error)
-    }
+export const prepareRetweets = (userTimeline: UserTimeline, tweet_instructions: string): RetweetBatch => {
+    const userName = userTimeline.user.data.username
+    const retweets = userTimeline.timeline.map(tweet => {
+        return {
+            'tweet_instructions': tweet_instructions,
+            'tweet_id': `${tweet.id}`
+        }
+    })
+    const retweetBatch = { tasks: retweets }
+    return retweetBatch
 }
 
 /******************************************************************************
  * Prepare a batch of tweets to Comment on 💬
  *****************************************************************************/
-interface CommentBatch {
+export interface CommentBatch {
     tasks: {
         tweet_instructions: string,
         tweet_id: string
@@ -126,29 +110,25 @@ interface CommentBatch {
  * Campaign template has has the following placeholder:
  * { 'tweet_instructions': "Lorem Ipsum", 'tweet_id': "1594994422856306688" }
  * @param userTimeline
- * @returns CommentBatch | undefined
+ * @returns CommentBatch
  * TODO: Does the template need to updated to include the username?
  */
-export const prepareComments = (userTimeline: UserTimeline, tweet_instructions: string): CommentBatch | undefined => {
-    try {
-        const username = userTimeline.user.data.username
-        const comments = userTimeline.timeline.map(tweet => {
-            return {
-                'tweet_instructions': tweet_instructions,
-                'tweet_id': `${tweet.id}`
-            }
-        })
-        const commentBatch = { tasks: comments }
-        return commentBatch
-    } catch (error) {
-        console.error(error)
-    }
+export const prepareComments = (userTimeline: UserTimeline, tweet_instructions: string): CommentBatch => {
+    const username = userTimeline.user.data.username
+    const comments = userTimeline.timeline.map(tweet => {
+        return {
+            'tweet_instructions': tweet_instructions,
+            'tweet_id': `${tweet.id}`
+        }
+    })
+    const commentBatch = { tasks: comments }
+    return commentBatch
 }
 
 /******************************************************************************
  * Prepare a batch of twitter users to follow 👥
  *****************************************************************************/
-interface FollowBatch {
+export interface FollowBatch {
     tasks: {
         twitter_handle: string
     }[]
@@ -160,14 +140,10 @@ interface FollowBatch {
  * Campaign template has has the following placeholder:
  *
  * @param twitterHandles
- * @returns FollowBatch | undefined
+ * @returns FollowBatch
  */
-export const prepareFollows = (twitterHandles: string[]): FollowBatch | undefined => {
-    try {
-        const follows = twitterHandles.map(handle => ({ 'twitter_handle': handle }))
-        const followBatch = { tasks: follows }
-        return followBatch
-    } catch (error) {
-        console.error(error)
-    }
+export const prepareFollows = (twitterHandles: string[]): FollowBatch => {
+    const follows = twitterHandles.map(handle => ({ 'twitter_handle': handle }))
+    const followBatch = { tasks: follows }
+    return followBatch
 }
