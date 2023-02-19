@@ -1,31 +1,46 @@
-import cron from 'node-cron';
-import { twitterHandles } from './handles.js';
-import { retrieveUserTweets } from './twitter.js';
+import { config } from 'dotenv'
+import cron from 'node-cron'
+import { twitterHandles } from './handles.js'
+import { retrieveUserTweets, prepareLikeTweets, prepareRetweets } from './twitter.js'
+import { createLikeBatch, createRetweetBatch } from './effect.js'
 
-/**
- * Run a task every minute ⏲
- */
-const cronSchedule = "* */360 * * *"
-//                    │  │  │ │ └──── day of week
-//                    │  │  │ └────── month
-//                    │  │  └──────── day of month
-//                    │  └─────────── every hour
-//                    └────────────── minute
-
-cron.schedule(cronSchedule, () => {
-    console.log('Running cron job 🤖', new Date())
-    // for (const handle of twitterHandles) {
-    //     await main(handle)
-    // }
+// Load environment variables
+const dotenv = config({
+    path: '.env',
+    encoding: 'utf8',
+    debug: process.env.NODE_ENV === 'development',
 })
 
-/**
- * Utility functions 🧰
- */
-const main = async () => {
-    const handle = twitterHandles[1]
-    console.log('Running main function 🤖', handle, new Date())
-    await retrieveUserTweets(handle, 5)
+if (dotenv.error) {
+    throw dotenv.error
+} else {
+    console.log('Loaded environment variables')
 }
 
-await main()
+// Twitter parameters and Effect parameters
+const tweet_instruction = process.env.RETWEET_INSTRUCTION ?? 'Be sure to follow task instructions and be decent.'
+const max_results = Number(process.env.TWITTER_MAX_RESULTS)
+const reps = Number(process.env.QUALIFIER_REPS)
+
+// Run a task every nth ⏲
+// https://crontab.guru/#0_6,12_*_*_*
+const cronSchedule = "0 6,12 * * *"
+
+console.log('Startup Effect Bot 🤖', new Date())
+
+cron.schedule(cronSchedule, async () => {
+    console.log('Running cron job 🤖', new Date())
+    for (const handle of twitterHandles) {
+        try {
+            const userTweets = await retrieveUserTweets(handle, max_results)
+        
+            const tweetsToLike = prepareLikeTweets(userTweets)
+            createLikeBatch(tweetsToLike, reps)
+    
+            const tweetsToRetweet = prepareRetweets(userTweets, tweet_instruction)
+            createRetweetBatch(tweetsToRetweet, reps)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+})
