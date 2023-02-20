@@ -14,8 +14,14 @@ Docs on how to generate a Twitter Bearer Token can be found here: [Twitter Beare
 
 ### Effect Force
 
-To post tasks to Effect Force we will need to add your privatee and public keys for `efxtaskproxy` in `.env`: `EOS_PRIVATE_KEY`, `EOS_PUBLIC_KEY`.
+To post tasks to Effect Force we will need to add your private and public keys for `efxtaskproxy` in `.env`: `EOS_PRIVATE_KEY`, `EOS_PUBLIC_KEY`.
 
 ## Install and Run
 
-To run this app, you'll need to install the dependencies with `npm ci` afterward you'll need to build it with `npm run build`, then you can run it with `npm run start`.
+To run this app, you'll need to run the following commands to install dependencies, and build and run the application.
+
+```bash
+npm ci
+npm run build
+npm run start
+```
