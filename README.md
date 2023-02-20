@@ -11,6 +11,7 @@ So copy `.env.bak` to `.env` and add the required credentials.
 
 You'll need a Bearer Token from Twitter, which can be found by making an account and an app at [developer.twitter.com](https://developer.twitter.com)
 Docs on how to generate a Twitter Bearer Token can be found here: [Twitter Bearer Token Docs](https://developer.twitter.com/en/docs/authentication/oauth-2-0/bearer-tokens)
+Afterwards you should add it to `TWITTER_BEARER_TOKEN` in `.env`
 
 ### Effect Force
 
