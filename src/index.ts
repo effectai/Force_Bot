@@ -12,9 +12,10 @@ const dotenv = config({
 })
 
 if (dotenv.error) {
-    throw dotenv.error
+    console.error(dotenv.error)
+    process.exit(1)
 } else {
-    console.log('Loaded environment variables')
+    console.log('Loaded environment variables 🌎')
 }
 
 // Twitter parameters and Effect parameters
