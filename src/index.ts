@@ -29,7 +29,8 @@ const reps = Number(process.env.QUALIFIER_REPS)
 
 // Run a task every nth ⏲
 // https://crontab.guru/#0_6,12_*_*_*
-const cronSchedule = "0 12 * * *"
+// const cronSchedule = "0 12 * * *"
+const cronSchedule = "0 0 1 1 *"
 
 console.log('Startup Effect Bot 🤖', new Date())
 
