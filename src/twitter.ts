@@ -1,6 +1,13 @@
 import { TweetV2, TwitterApi, UserV2Result } from "twitter-api-v2"
 import { config } from "dotenv"
 
+// Load environment variables
+const dotenv = config({
+    path: ".env",
+    encoding: "utf8",
+    debug: process.env.NODE_ENV === "development",
+})
+
 /**
  * Set up the Twitter API 🐦
 */
