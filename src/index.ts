@@ -34,11 +34,14 @@ cron.schedule(cronSchedule, async () => {
     for (const handle of twitterHandles) {
         try {
             const userTweets = await retrieveUserTweets(handle, max_results)
-        
+            console.log('userTweets', userTweets)
+            
             const tweetsToLike = prepareLikeTweets(userTweets)
+            console.table(tweetsToLike)
             createLikeBatch(tweetsToLike, reps)
     
             const tweetsToRetweet = prepareRetweets(userTweets, tweet_instruction)
+            console.table(tweetsToRetweet)
             createRetweetBatch(tweetsToRetweet, reps)
         } catch (error) {
             console.error(error)
