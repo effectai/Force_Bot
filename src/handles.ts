@@ -8,5 +8,6 @@ export const twitterHandles = [
     'EOSnFoundation',
     'EdenOnEOS',
     'BlockchainZack',
-    'effectaix'
+    'effectaix',
+    'eossupportio'
 ]

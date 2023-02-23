@@ -2,6 +2,7 @@ import { LikeBatch, CommentBatch, FollowBatch, RetweetBatch } from './twitter.js
 import { EffectClient } from '@effectai/effect-js'
 import { JsSignatureProvider } from "eosjs/dist/eosjs-jssig.js"
 import { config } from 'dotenv'
+import { ImageLabelingBatch } from './unsplash.js'
 
 config({
     path: '.env',
@@ -28,6 +29,7 @@ const {
     EFFECT_YOUTUBE_QUALIFIER,
     EFFECT_NFT_RESEARCH_QUALIFIER,
     EFFECT_IMAGE_CLASSIFICATION_QUALIFIER,
+    EFFECT_IMAGE_LABELING_CAMPAIGN_ID
 } = process.env
 
 /******************************************************************************
@@ -75,6 +77,10 @@ export const createFollowBatch = async (batch: FollowBatch, reps: number) => {
 
 export const createRetweetBatch = async (batch: RetweetBatch, reps: number) => {
     efxTaskProxy.force.createBatch(Number(EFFECT_RETWEETS_CAMPAIGN_ID), batch, reps).then(console.log).catch(err => { throw err })
+}
+
+export const createImageLabelerBatch = async (batch: ImageLabelingBatch, reps: number) => {
+    efxTaskProxy.force.createBatch(Number(EFFECT_IMAGE_LABELING_CAMPAIGN_ID), batch, reps).then(console.log).catch(err => { throw err })
 }
 
 /******************************************************************************

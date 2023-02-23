@@ -22,6 +22,7 @@ To post tasks to Effect Force we will need to add your private and public keys f
 To run this app, you'll need to run the following commands to install dependencies, and build and run the application.
 
 ```bash
+cp .env.bak .env # if you haven't already.
 npm ci
 npm run build
 npm run start
