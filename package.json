@@ -4,6 +4,9 @@
   "description": "Effect Force Task Uploader",
   "main": "dist/index.js",
   "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "build:watch": "tsc --watch",
     "build": "rimraf dist/ && tsc",
@@ -19,9 +22,11 @@
     "dotenv": "^16.0.3",
     "eosjs": "^22.1.0",
     "node-cron": "^3.0.2",
-    "twitter-api-v2": "^1.14.1"
+    "twitter-api-v2": "^1.14.1",
+    "unsplash-js": "^7.0.15"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.0",
     "@types/node": "^18.13.0",
     "@types/node-cron": "^3.0.7",
     "rimraf": "^4.1.2",
