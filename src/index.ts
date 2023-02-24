@@ -30,7 +30,7 @@ await mainPhoto()
 // https://crontab.guru/#0_6,12_*_*_*
 const cronSchedule = "0 12 * * *"
 cron.schedule(cronSchedule, async () => {
-    console.log('Running cron job 🤖', new Date())E
+    console.log('Running cron job 🤖', new Date())
     await mainPhoto()
     // await mainTwitter()
     console.log('Finished cron job 🤖', new Date())
