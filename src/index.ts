@@ -29,8 +29,7 @@ const reps = Number(process.env.QUALIFIER_REPS)
 
 // Run a task every nth ⏲
 // https://crontab.guru/#0_6,12_*_*_*
-// const cronSchedule = "0 12 * * *"
-const cronSchedule = "0 0 1 1 *"
+const cronSchedule = "0 12 * * *"
 
 console.log('Startup Effect Bot 🤖', new Date())
 
@@ -39,22 +38,22 @@ cron.schedule(cronSchedule, async () => {
 
     console.log('Retrieving tweets from Twitter 🐦')
     console.table(twitterHandles)
-    for (const handle of twitterHandles) {
-        try {
-            const userTweets = await retrieveUserTweets(handle, max_results)
-            console.log('userTweets', userTweets)
+    // for (const handle of twitterHandles) {
+    //     try {
+    //         const userTweets = await retrieveUserTweets(handle, max_results)
+    //         console.log('userTweets', userTweets)
 
-            const tweetsToLike = prepareLikeTweets(userTweets)
-            console.table(tweetsToLike)
-            await createLikeBatch(tweetsToLike, reps)
+    //         const tweetsToLike = prepareLikeTweets(userTweets)
+    //         console.table(tweetsToLike)
+    //         await createLikeBatch(tweetsToLike, reps)
 
-            const tweetsToRetweet = prepareRetweets(userTweets, tweet_instruction)
-            console.table(tweetsToRetweet)
-            await createRetweetBatch(tweetsToRetweet, reps)
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    //         const tweetsToRetweet = prepareRetweets(userTweets, tweet_instruction)
+    //         console.table(tweetsToRetweet)
+    //         await createRetweetBatch(tweetsToRetweet, reps)
+    //     } catch (error) {
+    //         console.error(error)
+    //     }
+    // }
 
     console.log('Getting images for image labeling campaign 🖼')
     const images = await getRandomPhotos(max_results)
