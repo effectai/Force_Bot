@@ -1,6 +1,7 @@
 import { createApi} from 'unsplash-js';
 import { Random } from 'unsplash-js/dist/methods/photos/types.js';
 import { config } from 'dotenv';
+import nodeFetch from 'node-fetch'
 
 // Load environment variables
 const dotenv = config({
@@ -11,7 +12,7 @@ const dotenv = config({
 
 const unsplash = createApi({
     accessKey: String(process.env.UNSPLASH_ACCESS_KEY),
-    fetch: fetch,
+    fetch: nodeFetch as any,
 });
 
 export const getRandomPhotos = async (count: number) => {
