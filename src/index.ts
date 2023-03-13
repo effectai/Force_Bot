@@ -1,65 +1,68 @@
 // Load environment variables
-import { config } from 'dotenv';
-const dotenv = config({
-    path: '.env',
-    encoding: 'utf8',
-    debug: process.env.NODE_ENV === 'development',
-})
+import { Env, loadEnv, env } from './env.js';
+loadEnv();
 
-if (dotenv.error) {
-    console.error(dotenv.error)
-    process.exit(1)
-} else {
-    console.log('Loaded environment variables 🌎')
-}
-
-import { getRandomPhotos, prepareImageLabelingBatch } from './unsplash.js';
+// Load imports
 import cron from 'node-cron'
-import { twitterHandles } from './handles.js'
+import { createNftBatch } from './nft_cat.js';
+import { createImageLabelerBatch, createLikeBatch, createNftCategorizationBatch, createRetweetBatch } from './effect.js'
 import { retrieveUserTweets, prepareLikeTweets, prepareRetweets } from './twitter.js'
-import { createImageLabelerBatch, createLikeBatch, createRetweetBatch } from './effect.js'
+import { getRandomPhotos, prepareImageLabelingBatch } from './unsplash.js';
 
-// Twitter parameters and Effect parameters
-const tweet_instruction = process.env.RETWEET_INSTRUCTION ?? 'Be sure to follow task instructions and be decent.'
-const max_results = Number(process.env.TWITTER_MAX_RESULTS)
-const reps = Number(process.env.QUALIFIER_REPS)
 console.log('Startup Effect Bot 🤖', new Date())
 
-await mainPhoto()
-
 // https://crontab.guru/#0_6,12_*_*_*
-const cronSchedule = "0 12 * * *"
-cron.schedule(cronSchedule, async () => {
-    console.log('Running cron job 🤖', new Date())
-    await mainPhoto()
-    // await mainTwitter()
-    console.log('Finished cron job 🤖', new Date())
-})
+// const cronSchedule = "0 12 * * *"
+// cron.schedule(cronSchedule, async () => {
+    //     console.log('Running cron job 🤖', new Date())
+        // await mainNftResearch()
+        // await mainPhotoLabeler()
+//     // await mainTwitter()
+//     console.log('Finished cron job 🤖', new Date())
+// })
 
-async function mainPhoto () {
+/**
+ * Main function to run the image labeling campaign
+ */
+async function mainPhotoLabeler () {
     console.log('Getting images for image labeling campaign 🖼')
-    const images = await getRandomPhotos(max_results)
+    const images = await getRandomPhotos(env.TWITTER_MAX_RESULTS)
     console.log(`Retrieved ${images} images`)
     const batch = prepareImageLabelingBatch(images)
-    await createImageLabelerBatch(batch, reps)
+    await createImageLabelerBatch(batch, env.TASKPROXY_REPS)
     console.log('Finished image labeling campaign 🖼')
 }
 
+/**
+ * Main function nft labeler
+ */
+async function mainNftResearch () {
+    try {
+        await createNftBatch()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+/**
+ * Main function to run the Twitter bot
+ */
 async function mainTwitter () {
     console.log('Retrieving tweets from Twitter 🐦')
-    console.table(twitterHandles)
-    for (const handle of twitterHandles) {
+    console.table(env.TWITTER_HANDLES)
+    const handles = env.TWITTER_HANDLES.split(',')
+    for (const handle of handles) {
         try {
-            const userTweets = await retrieveUserTweets(handle, max_results)
+            const userTweets = await retrieveUserTweets(handle, env.TWITTER_MAX_RESULTS)
             console.log('userTweets', userTweets)
 
             const tweetsToLike = prepareLikeTweets(userTweets)
             console.table(tweetsToLike)
-            await createLikeBatch(tweetsToLike, reps)
+            await createLikeBatch(tweetsToLike, env.TASKPROXY_REPS)
 
-            const tweetsToRetweet = prepareRetweets(userTweets, tweet_instruction)
+            const tweetsToRetweet = prepareRetweets(userTweets, env.RETWEET_INSTRUCTION)
             console.table(tweetsToRetweet)
-            await createRetweetBatch(tweetsToRetweet, reps)
+            await createRetweetBatch(tweetsToRetweet, env.TASKPROXY_REPS)
         } catch (error) {
             console.error(error)
         }
