@@ -32,7 +32,11 @@ export interface UserTimeline {
 export const retrieveUserTweets = async (twitterHandle: string, max_results: number): Promise<UserTimeline> => {
     try {
         const user = await twitterClient.v2.userByUsername(twitterHandle)
-        const userTimeline = await twitterClient.v2.userTimeline(user.data.id, { max_results })
+
+        const userTimeline = await twitterClient.v2.userTimeline(user.data.id, { 
+            max_results: max_results,
+            exclude: 'retweets'
+        })
         return { user, timeline: userTimeline.data.data }
     } catch (error) {
         throw error
@@ -81,8 +85,6 @@ export interface RetweetBatch {
  * @param userTimeline
  * @param tweet_instructions
  * @returns RetweetBatch
- *
- * TODO: Does the template need to updated to include the username?
  */
 export const prepareRetweets = (userTimeline: UserTimeline, tweet_instructions: string): RetweetBatch => {
     const userName = userTimeline.user.data.username
