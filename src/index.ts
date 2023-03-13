@@ -1,5 +1,5 @@
 // Load environment variables
-import { Env, loadEnv, env } from './env.js';
+import { loadEnv, env } from './env.js';
 loadEnv();
 
 // Load imports
@@ -11,15 +11,24 @@ import { getRandomPhotos, prepareImageLabelingBatch } from './unsplash.js';
 
 console.log('Startup Effect Bot 🤖', new Date())
 
-// https://crontab.guru/#0_6,12_*_*_*
-// const cronSchedule = "0 12 * * *"
-// cron.schedule(cronSchedule, async () => {
-    //     console.log('Running cron job 🤖', new Date())
-        // await mainNftResearch()
-        // await mainPhotoLabeler()
-//     // await mainTwitter()
-//     console.log('Finished cron job 🤖', new Date())
-// })
+// Run once a day at 12pm
+// https://crontab.guru/#0_12_*_*_1,3,5
+const cronSchedule = "0 12 * * 1,3,5"
+cron.schedule(cronSchedule, async () => {
+    console.log('Running cron job 🤖', new Date())
+    await mainNftResearch()
+    await mainPhotoLabeler()
+    console.log('Finished cron job 🤖', new Date())
+})
+
+// Run once a week on Monday at 12pm
+// https://crontab.guru/#0_12_*_*_1
+const cronScheduleTwitter = "0 12 * * 1"
+cron.schedule(cronScheduleTwitter, async () => {
+    console.log('Running cron job 🤖', new Date())
+    await mainTwitter()
+    console.log('Finished cron job 🤖', new Date())
+})
 
 /**
  * Main function to run the image labeling campaign
@@ -49,20 +58,21 @@ async function mainNftResearch () {
  */
 async function mainTwitter () {
     console.log('Retrieving tweets from Twitter 🐦')
-    console.table(env.TWITTER_HANDLES)
+    console.log(env.TWITTER_HANDLES)
     const handles = env.TWITTER_HANDLES.split(',')
+    console.log('handles', handles)
     for (const handle of handles) {
         try {
             const userTweets = await retrieveUserTweets(handle, env.TWITTER_MAX_RESULTS)
             console.log('userTweets', userTweets)
 
             const tweetsToLike = prepareLikeTweets(userTweets)
-            console.table(tweetsToLike)
+            console.log(tweetsToLike)
             await createLikeBatch(tweetsToLike, env.TASKPROXY_REPS)
 
-            const tweetsToRetweet = prepareRetweets(userTweets, env.RETWEET_INSTRUCTION)
-            console.table(tweetsToRetweet)
-            await createRetweetBatch(tweetsToRetweet, env.TASKPROXY_REPS)
+            // const tweetsToRetweet = prepareRetweets(userTweets, env.RETWEET_INSTRUCTION)
+            // console.log(tweetsToRetweet)
+            // await createRetweetBatch(tweetsToRetweet, env.TASKPROXY_REPS)
         } catch (error) {
             console.error(error)
         }
