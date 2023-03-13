@@ -3,20 +3,16 @@ import { Random } from 'unsplash-js/dist/methods/photos/types.js';
 import { config } from 'dotenv';
 import nodeFetch from 'node-fetch'
 
-// Load environment variables
-const dotenv = config({
-    path: '.env',
-    encoding: 'utf8',
-    debug: process.env.NODE_ENV === 'development',
-})
+// import { UNSPLASH_ACCESS_KEY } from './index.js';
+import { env } from './env.js'
 
 const unsplash = createApi({
-    accessKey: String(process.env.UNSPLASH_ACCESS_KEY),
+    accessKey: env.UNSPLASH_ACCESS_KEY,
     fetch: nodeFetch as any,
 });
 
 export const getRandomPhotos = async (count: number) => {
-    const random = await unsplash.photos.getRandom({ count: count, contentFilter: 'high' });
+    const random = await unsplash.photos.getRandom({ count: count, contentFilter: 'low' });
 
     if (random.errors) {
         throw new Error(random.errors[0]);
@@ -46,14 +42,3 @@ export const prepareImageLabelingBatch = (photos: Random[]) => {
         tasks,
     };
 }
-export type Photo = {
-    id: number;
-    width: number;
-    height: number;
-    urls: { large: string; regular: string; raw: string; small: string };
-    color: string | null;
-    user: {
-      username: string;
-      name: string;
-    };
-};
