@@ -1,20 +1,15 @@
 import { TweetV2, TwitterApi, UserV2Result } from "twitter-api-v2"
 import { config } from "dotenv"
 
-// Load environment variables
-const dotenv = config({
-    path: ".env",
-    encoding: "utf8",
-    debug: process.env.NODE_ENV === "development",
-})
+// import { TWITTER_BEARER_TOKEN } from "./index.js"
+import { env, loadEnv } from "./env.js"
+
+loadEnv();
 
 /**
  * Set up the Twitter API 🐦
 */
-const {
-    TWITTER_BEARER_TOKEN,
-} = process.env
-const twitterClient = new TwitterApi(TWITTER_BEARER_TOKEN!)
+const twitterClient = new TwitterApi(env.TWITTER_BEARER_TOKEN)
 
 /**
  * User timeline 📝
