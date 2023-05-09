@@ -1,6 +1,6 @@
 import { Batch } from '@effectai/effect-js/dist/lib/types/batch.js';
 import papaparse from 'papaparse';
-import { efxTaskProxy, createNftCategorizationBatch, batch } from './effect.js';
+import { efxTaskProxy, createNftCategorizationBatch } from './effect.js';
 import { env } from './env.js';
 
 export const getLatestNftImageUrl = async (): Promise<NftLink> => {
