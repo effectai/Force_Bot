@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`Force_Bot Server listening at http://localhost:${port}`)
 })
 
 console.log('Startup Effect Bot 🤖', new Date())
