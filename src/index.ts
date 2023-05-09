@@ -8,6 +8,19 @@ import { createNftBatch } from './nft_cat.js';
 import { createImageLabelerBatch, createLikeBatch, createNftCategorizationBatch, createRetweetBatch } from './effect.js'
 import { retrieveUserTweets, prepareLikeTweets, prepareRetweets } from './twitter.js'
 import { getRandomPhotos, prepareImageLabelingBatch } from './unsplash.js';
+import express from 'express'
+
+// Set up express server
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => {
+    res.json({ message: 'Force_Bot up and running 🤖', time: new Date() })
+})
+
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
+})
 
 console.log('Startup Effect Bot 🤖', new Date())
 
@@ -78,3 +91,5 @@ async function mainTwitter () {
         }
     }
 }
+
+
