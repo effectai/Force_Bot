@@ -66,6 +66,7 @@ export const loadEnv = (): void => {
     if (!existsSync(envPath)) {
         console.error('Missing .env file 🚨')
         // process.exit(1)
+        env = load(schema, { encoding: 'utf8' })
     } else {
         // console.log('Found .env file ✅')
         env = load(schema, {
