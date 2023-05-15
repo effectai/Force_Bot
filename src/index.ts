@@ -18,6 +18,7 @@ app.get('/', (req, res) => res.json({ message: 'Force_Bot up and running 🤖', 
 app.listen(port, () => console.log(`Force_Bot Server listening at http://localhost:${port}`))
 
 console.log('Startup Effect Bot 🤖', new Date())
+mainTwitter().then(console.log).catch(console.error)
 
 // Run once a day at 12pm
 // https://crontab.guru/#0_12_*_*_1,3,5
@@ -73,14 +74,18 @@ async function mainTwitter () {
         try {
             const userTweets = await retrieveUserTweets(handle, env.TWITTER_MAX_RESULTS)
             console.log('userTweets', userTweets)
-
+            
+            await new Promise(resolve => setTimeout(resolve, 5e3));
+            console.log('Creating tweets to like 🤍 for: ', handle)
             const tweetsToLike = prepareLikeTweets(userTweets)
             console.log(tweetsToLike)
             await createLikeBatch(tweetsToLike, env.TASKPROXY_REPS)
 
-            // const tweetsToRetweet = prepareRetweets(userTweets, env.RETWEET_INSTRUCTION)
-            // console.log(tweetsToRetweet)
-            // await createRetweetBatch(tweetsToRetweet, env.TASKPROXY_REPS)
+            await new Promise(resolve => setTimeout(resolve, 5e3));
+            const tweetsToRetweet = prepareRetweets(userTweets, env.RETWEET_INSTRUCTION)
+            console.log('Creating tweets to retweet 🐦 for: ', handle)
+            console.log(tweetsToRetweet)
+            await createRetweetBatch(tweetsToRetweet, env.TASKPROXY_REPS)
         } catch (error) {
             console.error(error)
         }
