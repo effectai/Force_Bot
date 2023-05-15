@@ -32,7 +32,7 @@ export const getNftUrls = async (): Promise<NftLink[]> => {
     try {
         const urls = await fetch(env.NFT_URL)
         const response = await urls.text()
-        const nftList = papaparse.parse(response, { header: true })?.data
+        const nftList = papaparse.parse(response, { header: true }).data
         return nftList as unknown as NftLink[]
     } catch (error) {
         console.error(error)
