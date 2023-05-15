@@ -13,22 +13,26 @@ loadEnv();
 const signatureProvider = new JsSignatureProvider([env.EOS_PRIVATE_KEY])
 
 export const efxTaskProxy = new EffectClient(env.EOS_ENV)
-await efxTaskProxy.connectAccount(signatureProvider, {
+efxTaskProxy.connectAccount(signatureProvider, {
     accountName: env.EFXTASKPROXY_ACCOUNT_NAME,
     permission: env.EFXTASKPROXY_ACCOUNT_PERMISSION,
     publicKey: env.EOS_PUBLIC_KEY
-}).catch((err) => {
+})
+.then(console.log)
+.catch((err) => {
     console.log('Error connecting to Effect Task Proxy, exiting...')
     console.error(err)
     process.exit(1)
 })
 
 export const efxQualifier = new EffectClient(env.EOS_ENV)
-await efxQualifier.connectAccount(signatureProvider, {
+efxQualifier.connectAccount(signatureProvider, {
     accountName: env.EFXQUALIFIER_ACCOUNT_NAME,
     permission: env.EFXQUALIFIER_ACCOUNT_PERMISSION,
     publicKey: env.EOS_PUBLIC_KEY
-}).catch((err) => {
+})
+.then(console.log)
+.catch((err) => {
     console.log('Error connecting to Effect Qualifier, exiting...')
     console.error(err)
     process.exit(1)
@@ -39,33 +43,69 @@ await efxQualifier.connectAccount(signatureProvider, {
  *****************************************************************************/
 
 export const createLikeBatch = async (batch: LikeBatch, reps: number) => {
-    printPrice(env.EFFECT_LIKE_CAMPAIGN_ID, reps, batch.tasks.length)
-    efxTaskProxy.force.createBatch(env.EFFECT_LIKE_CAMPAIGN_ID, batch, reps).then(console.log).catch(err => { throw err })
+    try {
+        await printPrice(env.EFFECT_LIKE_CAMPAIGN_ID, reps, batch.tasks.length)
+        const { transaction } = await efxTaskProxy.force.createBatch(env.EFFECT_LIKE_CAMPAIGN_ID, batch, reps)
+        console.log('Waiting for transaction to finalize', transaction)
+        await efxTaskProxy.force.waitTransaction(transaction)
+    } catch (error) {
+        throw error
+    }
 }
 
 export const createCommentBatch = async (batch: CommentBatch, reps: number) => {
-    printPrice(env.EFFECT_COMMENT_CAMPAIGN_ID, reps, batch.tasks.length)
-    efxTaskProxy.force.createBatch(env.EFFECT_COMMENT_CAMPAIGN_ID, batch, reps).then(console.log).catch(err => { throw err })
+    try {
+        await printPrice(env.EFFECT_COMMENT_CAMPAIGN_ID, reps, batch.tasks.length)
+        const { transaction } = await efxTaskProxy.force.createBatch(env.EFFECT_COMMENT_CAMPAIGN_ID, batch, reps)
+        console.log('Waiting for transaction to finalize', transaction)
+        await efxTaskProxy.force.waitTransaction(transaction)
+    } catch (error) {
+        throw error
+    }
 }
 
 export const createFollowBatch = async (batch: FollowBatch, reps: number) => {
-    printPrice(env.EFFECT_FOLLOWS_CAMPAIGN_ID, reps, batch.tasks.length)
-    efxTaskProxy.force.createBatch(env.EFFECT_FOLLOWS_CAMPAIGN_ID, batch, reps).then(console.log).catch(err => { throw err })
+    try {
+        await printPrice(env.EFFECT_FOLLOWS_CAMPAIGN_ID, reps, batch.tasks.length)
+        const { transaction } = await efxTaskProxy.force.createBatch(env.EFFECT_FOLLOWS_CAMPAIGN_ID, batch, reps)
+        console.log('Waiting for transaction to finalize', transaction)
+        await efxTaskProxy.force.waitTransaction(transaction)
+    } catch (error) {
+        throw error
+    }
 }
 
 export const createRetweetBatch = async (batch: RetweetBatch, reps: number) => {
-    printPrice(env.EFFECT_RETWEETS_CAMPAIGN_ID, reps, batch.tasks.length)
-    efxTaskProxy.force.createBatch(env.EFFECT_RETWEETS_CAMPAIGN_ID, batch, reps).then(console.log).catch(err => { throw err })
+    try {
+        await printPrice(env.EFFECT_RETWEETS_CAMPAIGN_ID, reps, batch.tasks.length)
+        const { transaction } = await efxTaskProxy.force.createBatch(env.EFFECT_RETWEETS_CAMPAIGN_ID, batch, reps)
+        console.log('Waiting for transaction to finalize', transaction)
+        await efxTaskProxy.force.waitTransaction(transaction)
+    } catch (error) {
+        throw error
+    }
 }
 
 export const createImageLabelerBatch = async (batch: ImageLabelingBatch, reps: number) => {
-    printPrice(env.EFFECT_IMAGE_LABELING_CAMPAIGN_ID, reps, batch.tasks.length)
-    efxTaskProxy.force.createBatch(env.EFFECT_IMAGE_LABELING_CAMPAIGN_ID, batch, reps).then(console.log).catch(err => { throw err })
+    try {
+        await printPrice(env.EFFECT_IMAGE_LABELING_CAMPAIGN_ID, reps, batch.tasks.length)
+        const { transaction } = await efxTaskProxy.force.createBatch(env.EFFECT_IMAGE_LABELING_CAMPAIGN_ID, batch, reps)
+        console.log('Waiting for transaction to finalize', transaction)
+        await efxTaskProxy.force.waitTransaction(transaction)
+    } catch (error) {
+        throw error
+    }
 }
 
 export const createNftCategorizationBatch = async (batch: ImageLabelingBatch, reps: number) => {
-    printPrice(env.EFFECT_NFT_CATEGORIZATION_CAMPAIGN_ID, reps, batch.tasks.length)
-    efxTaskProxy.force.createBatch(env.EFFECT_NFT_CATEGORIZATION_CAMPAIGN_ID, batch, reps).then(console.log).catch(err => { throw err })
+    try {
+        await printPrice(env.EFFECT_NFT_CATEGORIZATION_CAMPAIGN_ID, reps, batch.tasks.length)
+        const { transaction }= await efxTaskProxy.force.createBatch(env.EFFECT_NFT_CATEGORIZATION_CAMPAIGN_ID, batch, reps)
+        console.log('Waiting for transaction to finalize', transaction)
+        await efxTaskProxy.force.waitTransaction(transaction)
+    } catch (error) {
+        
+    }
 }
 
 /******************************************************************************
