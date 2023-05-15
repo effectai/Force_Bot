@@ -33,9 +33,10 @@ export const retrieveUserTweets = async (twitterHandle: string, max_results: num
     try {
         const user = await twitterClient.v2.userByUsername(twitterHandle)
 
-        const userTimeline = await twitterClient.v2.userTimeline(user.data.id, { 
+        const userTimeline = await twitterClient.v2.userTimeline(user.data.id, {
             max_results: max_results,
-            exclude: 'retweets'
+            exclude: ['retweets', 'replies'],
+            start_time: new Date(Date.now() - env.TWITTER_HOUR_INTERVAL * 60 * 60 * 1000).toISOString() // hours ago
         })
         return { user, timeline: userTimeline.data.data }
     } catch (error) {
@@ -62,11 +63,14 @@ export interface LikeBatch {
  */
 export const prepareLikeTweets = (userTimeline: UserTimeline): LikeBatch => {
     const userName = userTimeline.user.data.username
-    const likeTweets = userTimeline.timeline.map(tweet => ({ 'tweet': `${userName}/${tweet.id}` }))
-    const likeBatch = { tasks: likeTweets }
-    return likeBatch
+    if (userTimeline && userTimeline.timeline && userTimeline.timeline.length) {
+        const likeTweets = userTimeline.timeline.map(tweet => ({ 'tweet': `${userName}/${tweet.id}` }))
+        const likeBatch = { tasks: likeTweets }
+        return likeBatch
+    } else {
+        throw new Error('No tweets found')
+    }
 }
-
 /******************************************************************************
  * Prepare a batch of tweets to retweet 💬
  *****************************************************************************/
@@ -87,15 +91,19 @@ export interface RetweetBatch {
  * @returns RetweetBatch
  */
 export const prepareRetweets = (userTimeline: UserTimeline, tweet_instructions: string): RetweetBatch => {
-    const userName = userTimeline.user.data.username
-    const retweets = userTimeline.timeline.map(tweet => {
-        return {
-            'tweet_instructions': tweet_instructions,
-            'tweet_id': `${tweet.id}`
-        }
-    })
-    const retweetBatch = { tasks: retweets }
-    return retweetBatch
+    // const userName = userTimeline.user.data.username
+    if (userTimeline && userTimeline.timeline && userTimeline.timeline.length) {
+        const retweets = userTimeline.timeline.map(tweet => {
+            return {
+                'tweet_instructions': tweet_instructions,
+                'tweet_id': `${tweet.id}`
+            }
+        })
+        const retweetBatch = { tasks: retweets }
+        return retweetBatch
+    } else {
+        throw new Error('No tweets found')
+    }
 }
 
 /******************************************************************************
@@ -109,6 +117,7 @@ export interface CommentBatch {
 }
 
 /**
+ * TODO: These need to implement
  * Prepare a batch of tweets to comment on 💬
  * https://app.effect.network/campaigns/17/
  * Campaign template has has the following placeholder:
