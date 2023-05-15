@@ -29,8 +29,8 @@ console.log('Startup Effect Bot 🤖', new Date())
 const cronSchedule = "0 12 * * 1,3,5"
 cron.schedule(cronSchedule, async () => {
     console.log('Running cron job 🤖', new Date())
-    await mainNftResearch()
-    await mainPhotoLabeler()
+//    await mainNftResearch()
+//    await mainPhotoLabeler()
     console.log('Finished cron job 🤖', new Date())
 })
 
@@ -39,7 +39,7 @@ cron.schedule(cronSchedule, async () => {
 const cronScheduleTwitter = "0 12 * * 1"
 cron.schedule(cronScheduleTwitter, async () => {
     console.log('Running cron job 🤖', new Date())
-    await mainTwitter()
+//    await mainTwitter()
     console.log('Finished cron job 🤖', new Date())
 })
 
