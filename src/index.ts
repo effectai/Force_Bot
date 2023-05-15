@@ -18,7 +18,6 @@ app.get('/', (req, res) => res.json({ message: 'Force_Bot up and running 🤖', 
 app.listen(port, () => console.log(`Force_Bot Server listening at http://localhost:${port}`))
 
 console.log('Startup Effect Bot 🤖', new Date())
-mainTwitter().then(console.log).catch(console.error)
 
 // Run once a day at 12pm
 // https://crontab.guru/#0_12_*_*_1,3,5
@@ -30,12 +29,12 @@ cron.schedule(cronSchedule, async () => {
     console.log('Finished cron job 🤖', new Date())
 })
 
-// Run once a week on Monday at 12pm
-// https://crontab.guru/#0_12_*_*_1
-const cronScheduleTwitter = "0 12 * * 1"
+// Run once every day at 1700
+// https://crontab.guru/#00_17_*_*_*
+const cronScheduleTwitter = "0 17 * * *"
 cron.schedule(cronScheduleTwitter, async () => {
     console.log('Running cron job 🤖', new Date())
-//    await mainTwitter()
+    mainTwitter().then(console.log).catch(console.error)
     console.log('Finished cron job 🤖', new Date())
 })
 
