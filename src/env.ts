@@ -46,6 +46,7 @@ export const schema = {
     RETWEET_INSTRUCTION: String,
     TWITTER_BEARER_TOKEN: String,
     TWITTER_MAX_RESULTS: Number,
+    TWITTER_HOUR_INTERVAL: Number,
 
     // UNSPLASH
     UNSPLASH_ACCESS_KEY: String,
@@ -64,11 +65,11 @@ export const loadEnv = (): void => {
     // console.log('envPath', envPath)
     // const envPath = process.env.NODE_ENV === 'production' ? '.env' : '.env.development';
     if (!existsSync(envPath)) {
-        console.error('Missing .env file 🚨')
+        console.log('Missing .env file 🚨, Using process environment 📩')
         // process.exit(1)
         env = load(schema, { encoding: 'utf8' })
     } else {
-        // console.log('Found .env file ✅')
+        console.log('Found .env file ✅')
         env = load(schema, {
             path: envPath,
             encoding: 'utf8',
